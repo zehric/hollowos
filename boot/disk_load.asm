@@ -9,14 +9,14 @@ disk_load:
 	mov cl, 2 ; sector 2
 
 	int 0x13
-	jc disk_error
+	jc .error
 
 	pop dx
 	cmp dh, al ; check if sectors read == sectors expected
-	jne disk_error
+	jne .error
 	ret
 
-disk_error:
+.error:
 	mov bx, DISK_ERROR_MSG
 	call print_string
 	jmp $

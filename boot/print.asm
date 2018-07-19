@@ -1,5 +1,6 @@
 print_string:
-	pusha
+	push ax
+        push bx
 
 	mov ah, 0x0e
 
@@ -12,5 +13,6 @@ print_string:
 	jmp .loop
 
 .done:
-	popa
+	pop bx
+        pop ax
 	ret

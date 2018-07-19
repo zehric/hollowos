@@ -1,0 +1,7 @@
+1. Get cross compiler
+2. Switch from NASM to GAS
+# 3. Load kernel to 0x00020000
+4. Use extended read
+5. Add linker file to specify kernel memory sections
+6. Enable A20 line
+7. Add paging/privilege

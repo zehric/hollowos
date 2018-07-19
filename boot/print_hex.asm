@@ -1,5 +1,8 @@
 print_hex:
-	pusha
+	push ax
+        push bx
+	push cx
+	push dx
 
 	mov cx, 0
 	mov bx, HEX_OUT + 5
@@ -25,7 +28,11 @@ print_hex:
 .done:
 	mov bx, HEX_OUT
 	call print_string
-	popa
+	
+	pop dx
+	pop cx
+	pop bx
+	pop ax ; TODO: check if this works
 	ret
 
 HEX_OUT:
