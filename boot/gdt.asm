@@ -31,8 +31,8 @@ GDT_END:
 
 ; GDT descriptior
 GDT_DESCRIPTOR:
-	dw gdt_end - gdt_start - 1	; size - 1
-	dd gdt_start			; start address
+	dw GDT_END - GDT_START - 1	; size - 1
+	dd GDT_START			; start address
 
 ; GDT segment descriptor offsets
 CODE_SEG equ GDT_CODE - GDT_START

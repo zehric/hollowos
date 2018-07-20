@@ -20,7 +20,4 @@ init_pm:
 	mov fs, ax
 	mov gs, ax
 
-;	mov ebp, 0x90000	; Update stack
-;	mov esp, ebp ; TODO: check if works
-
 	call BEGIN_PM

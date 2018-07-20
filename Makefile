@@ -1,26 +1,36 @@
-all: os-image
+SOURCES = $(wildcard **/*.c)
+HEADERS = $(wildcard **/*.h)
+OBJ = $(SOURCES:.c=.o)
+
+CC = /usr/bin/gcc -fno-pie -m32
+LD = /usr/bin/ld -m elf_i386
+
+OUTPUT = os-image
+
+all: $(OUTPUT)
 
 run: all
-	qemu-system-i386 --curses os-image
+	qemu-system-i386 --curses $(OUTPUT)
 
-os-image: boot_sect.bin kernel.bin
+$(OUTPUT): boot/bootloader.bin kernel/kernel.bin
 	cat $^ > $@
 	dd if=/dev/zero bs=8192 count=1 >> $@ # TODO: remove if kernel gets larger
 
-kernel.bin: kernel_entry.o kernel.o
-	ld -m elf_i386 -o $@ -Ttext 0x1000 $^ --oformat binary --entry main
+kernel/kernel.bin: $(OBJ)
+	$(LD) -o $@ -Ttext 0x20000 $^ --oformat binary --entry main
 
-kernel.o: kernel.c
-	gcc -fno-pie -m32 -ffreestanding -c $< -o $@
+%.o: %.c $(HEADERS)
+	$(CC) -ffreestanding -c $< -o $@
 
-kernel_entry.o: kernel_entry.asm
+%.o: %.asm
 	nasm $< -f elf -o $@
 
-boot_sect.bin: boot_sect.asm
-	nasm $< -f bin -o $@
+%.bin: %.asm
+	nasm $< -f bin -I './boot/' -o $@
 
+.PHONY: clean
 clean:
-	rm -rf *.bin *.dis *.o os-image *.map
+	rm -rf **/*.bin **/*.dis **/*.o os-image
 
-kernel.dis: kernel.bin
+disassemble: kernel.bin
 	ndisasm -b 32 $< > $@

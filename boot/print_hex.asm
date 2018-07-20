@@ -32,7 +32,7 @@ print_hex:
 	pop dx
 	pop cx
 	pop bx
-	pop ax ; TODO: check if this works
+	pop ax
 	ret
 
 HEX_OUT:
