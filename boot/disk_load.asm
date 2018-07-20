@@ -2,18 +2,14 @@
 disk_load:
 	push dx
 
-	mov ah, 0x02 ; bios read sector function code
-	mov al, dh ; read DH sectors
-	mov ch, 0 ; cylinder 0
-	mov dh, 0 ; head 0
-	mov cl, 2 ; sector 2
+	mov ah, 0x42 		; bios read sector function code
+	mov [DAP.sectors], dh 	; update number of sectors to read
+	mov si, DAP 		; DS:SI -> DAP
 
 	int 0x13
 	jc .error
 
 	pop dx
-	cmp dh, al ; check if sectors read == sectors expected
-	jne .error
 	ret
 
 .error:
@@ -24,3 +20,13 @@ disk_load:
 
 DISK_ERROR_MSG:
 	db 'Disk read error!', 0
+
+DAP:
+        db 0x10		; DAP size
+        db 0		; unused
+.sectors:
+        dw 0		; number of sectors
+        dw 0		; offset register
+        dw 0x2000	; segment register
+        dq 1		; number of sectors to read
+
