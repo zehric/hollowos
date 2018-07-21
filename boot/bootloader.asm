@@ -17,16 +17,19 @@ call print_string
 
 call load_kernel
 
+call set_a20
+
 call switch_to_pm
 
 jmp $ ; never reached
 
 %include "print.asm"
-%include "print_hex.asm"
+; %include "print_hex.asm"
 %include "disk_load.asm"
 %include "gdt.asm"
-%include "print_pm.asm"
+; %include "print_pm.asm"
 %include "switch.asm"
+%include "a20.asm"
 
 [bits 16]
 load_kernel:
@@ -48,8 +51,6 @@ load_kernel:
 KERNEL_OFFSET equ 0x20000
 
 BEGIN_PM: ; Entry point of protected mode
-	mov ebx, MSG_PROT_MODE
-	call print_string_pm
 
 	call KERNEL_OFFSET
 
@@ -57,8 +58,7 @@ BEGIN_PM: ; Entry point of protected mode
 
 BOOT_DRIVE db 0
 MSG_REAL_MODE db "Init bootloader. ", 0
-MSG_PROT_MODE db "Loaded 32-bit protected mode", 0
-MSG_LOAD_KERNEL db "Loading kernel into memory.", 0
+MSG_LOAD_KERNEL db "Loading kernel. ", 0
 
 ; Bootsector padding
 times 510-($-$$) db 0

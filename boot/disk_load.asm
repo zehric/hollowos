@@ -19,7 +19,7 @@ disk_load:
 
 
 DISK_ERROR_MSG:
-	db 'Disk read error!', 0
+	db 'Disk read error', 0
 
 DAP:
         db 0x10		; DAP size

@@ -16,8 +16,8 @@ $(OUTPUT): boot/bootloader.bin kernel/kernel.bin
 	cat $^ > $@
 	dd if=/dev/zero bs=8192 count=1 >> $@ # TODO: remove if kernel gets larger
 
-kernel/kernel.bin: $(OBJ)
-	$(LD) -o $@ -Ttext 0x20000 $^ --oformat binary --entry main
+kernel/kernel.bin: kernel/kernel_entry.o $(OBJ) 
+	$(LD) -T kernel/kernel.ld -o $@ --oformat binary $^
 
 %.o: %.c $(HEADERS)
 	$(CC) -ffreestanding -c $< -o $@
@@ -32,5 +32,5 @@ kernel/kernel.bin: $(OBJ)
 clean:
 	rm -rf **/*.bin **/*.dis **/*.o os-image
 
-disassemble: kernel.bin
-	ndisasm -b 32 $< > $@
+disassemble: kernel/kernel.bin
+	ndisasm -b 32 $<

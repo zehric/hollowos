@@ -1,9 +1,17 @@
+#define VIDEO_MEMORY 0xb8000
+#define WHITE_ON_BLACK 0x0f 
+
+static char * const vmem = (char *) VIDEO_MEMORY;
+
+void print(char *s) {
+	int i = 0;
+	do {
+		vmem[i] = *s;
+		vmem[i + 1] = WHITE_ON_BLACK;
+		i += 2;
+	} while (*++s);
+}
+
 void main() {
-	char *video_memory = (char *) 0xb8000;
-	*video_memory = 'H';
-	*(video_memory + 2) = 'O';
-	*(video_memory + 4) = 'L';
-	*(video_memory + 6) = 'L';
-	*(video_memory + 8) = 'O';
-	*(video_memory + 10) = 'W';
+	print("Welcome home, Ashen One. Speak thine heart's desire.");
 }
