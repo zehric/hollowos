@@ -1,5 +1,5 @@
-SOURCES = $(wildcard **/*.c)
-HEADERS = $(wildcard **/*.h)
+SOURCES = $(wildcard *.c kernel/*.c)
+HEADERS = $(wildcard *.h kernel/*.h)
 OBJ = $(SOURCES:.c=.o)
 
 CC = /usr/bin/gcc -fno-pie -m32
@@ -30,7 +30,8 @@ kernel/kernel.bin: kernel/kernel_entry.o $(OBJ)
 
 .PHONY: clean
 clean:
-	rm -rf **/*.bin **/*.dis **/*.o os-image
+	rm -rf *.bin *.o os-image
+	rm -rf kernel/*.bin kernel/*.o boot/*.bin
 
 disassemble: kernel/kernel.bin
 	ndisasm -b 32 $<
