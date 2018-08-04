@@ -1,6 +1,10 @@
-SOURCES = $(wildcard *.c kernel/*.c)
-HEADERS = $(wildcard *.h kernel/*.h)
+SRCDIR = .
+SOURCES = $(wildcard kernel/*.c drivers/*.c)
+HEADERS = $(wildcard kernel/*.h drivers/*.h)
 OBJ = $(SOURCES:.c=.o)
+
+WARNINGS = -Wall -W -Wstrict-prototypes -Wmissing-prototypes -Wsystem-headers
+CFLAGS = -msoft-float -O -nostdinc -I$(SRCDIR) -fno-stack-protector -ffreestanding
 
 CC = /usr/bin/gcc -fno-pie -m32
 LD = /usr/bin/ld -m elf_i386
@@ -20,7 +24,7 @@ kernel/kernel.bin: kernel/kernel_entry.o $(OBJ)
 	$(LD) -T kernel/kernel.ld -o $@ --oformat binary $^
 
 %.o: %.c $(HEADERS)
-	$(CC) -ffreestanding -c $< -o $@
+	$(CC) $(WARNINGS) $(CFLAGS) -c $< -o $@
 
 %.o: %.asm
 	nasm $< -f elf -o $@
@@ -30,8 +34,8 @@ kernel/kernel.bin: kernel/kernel_entry.o $(OBJ)
 
 .PHONY: clean
 clean:
-	rm -rf *.bin *.o os-image
-	rm -rf kernel/*.bin kernel/*.o boot/*.bin
+	rm -rf *.bin *.o os-image *.elf
+	rm -rf kernel/*.bin kernel/*.o boot/*.bin drivers/*.o
 
 disassemble: kernel/kernel.bin
 	ndisasm -b 32 $<
